@@ -1,9 +1,9 @@
 const express = require('express');
 const app = express();
-const authRoutes = require('./routes/auth');
-const userRoutes = require('./routes/users');
-const blogRoutes = require('./routes/blogs');
-const categoryRoutes = require('./routes/categories');
+const authRoutes = require('./blog-api/Routes/auth.js')
+const userRoutes = require('./blog-api/Routes/users.js');
+const blogRoutes = require('./blog-api/Routes/blogs.js');
+const categoryRoutes = require('./blog-api/Routes/categories.js');
 
 app.use(express.json());
 
