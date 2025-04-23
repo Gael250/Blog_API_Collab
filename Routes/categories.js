@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const catCtrl = require("../controllers/categoryController");
+const catCtrl = require("../controller/categoryController.js");
 const auth = require("../Middleware/auth");
 const roleCheck = require("../Middleware/roleCheck");
 

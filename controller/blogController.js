@@ -1,4 +1,4 @@
-import Blog from "/models/Blog.js";
+const Blogs = require("../Models/blog.js");
 
 exports.getAllBlogs = async (req, res) => {
   const blogs = await Blog.find().populate("author", "username").populate("category", "name");

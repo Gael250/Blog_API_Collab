@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const blogCtrl = require("../controllers/blogController");
+const blogCtrl = require("../controller/blogController.js");
 const auth = require("../Middleware/auth");
 const ownerCheck = require("../Middleware/ownerCheck");
 
