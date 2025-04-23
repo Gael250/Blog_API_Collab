@@ -1,35 +1,87 @@
-import Blog from "/models/Blog.js";
+import Blog from "../models/Blog.js";
 
-exports.getAllBlogs = async (req, res) => {
-  const blogs = await Blog.find().populate("author", "username").populate("category", "name");
-  res.json(blogs);
-
+export const getAllBlogs = async (req, res) => {
+  try {
+    const blogs = await Blog.find()
+      .populate("author", "username")
+      .populate("category", "name");
+    res.json(blogs);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch blogs" });
+  }
 };
 
-exports.getBlogById = async (req, res) => {
-  const blog = await Blog.findById(req.params.id).populate("author", "username").populate("category", "name");
-  if (!blog) return res.status(404).json({ error: "Blog not found" });
-  res.json(blog);
+export const getBlogById = async (req, res) => {
+  try {
+    const blog = await Blog.findById(req.params.id)
+      .populate("author", "username")
+      .populate("category", "name");
+    if (!blog) return res.status(404).json({ error: "Blog not found" });
+    res.json(blog);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch blog" });
+  }
 };
 
-exports.createBlog = async (req, res) => {
-  const blog = new Blog({ ...req.body, author: req.user.id });
-  await blog.save();
-  
-  res.status(201).json(blog);
+export const createBlog = async (req, res) => {
+  try {
+    const { title, content, category } = req.body;
+    
+    if (!title || !content) {
+      return res.status(400).json({ error: "Title and content are required" });
+    }
+
+    const blog = new Blog({ 
+      title, 
+      content, 
+      category,
+      author: req.user.id 
+    });
+    
+    await blog.save();
+    res.status(201).json(blog);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
 };
 
-exports.updateBlog = async (req, res) => {
-  const updatedBlog = await Blog.findByIdAndUpdate(req.params.id, req.body, { new: true });
-  res.json(updatedBlog);
+export const updateBlog = async (req, res) => {
+  try {
+    const { title, content, category } = req.body;
+    const updatedBlog = await Blog.findByIdAndUpdate(
+      req.params.id,
+      { title, content, category },
+      { new: true }
+    );
+    
+    if (!updatedBlog) {
+      return res.status(404).json({ error: "Blog not found" });
+    }
+    
+    res.json(updatedBlog);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
 };
 
-exports.deleteBlog = async (req, res) => {
-  await Blog.findByIdAndDelete(req.params.id);
-  res.json({ message: "Blog deleted" });
+export const deleteBlog = async (req, res) => {
+  try {
+    const blog = await Blog.findByIdAndDelete(req.params.id);
+    if (!blog) {
+      return res.status(404).json({ error: "Blog not found" });
+    }
+    res.json({ message: "Blog deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to delete blog" });
+  }
 };
 
-exports.getBlogsByCategory = async (req, res) => {
-  const blogs = await Blog.find({ category: req.params.categoryId });
-  res.json(blogs);
+export const getBlogsByCategory = async (req, res) => {
+  try {
+    const blogs = await Blog.find({ category: req.params.categoryId })
+      .populate("author", "username");
+    res.json(blogs);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch blogs by category" });
+  }
 };

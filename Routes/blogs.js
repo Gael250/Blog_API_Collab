@@ -1,15 +1,23 @@
-const express = require("express");
+import express from "express";
+import { 
+  getAllBlogs, 
+  getBlogById, 
+  createBlog, 
+  updateBlog, 
+  deleteBlog, 
+  getBlogsByCategory 
+} from "../controllers/blogController.js";
+import { authenticate } from "../middleware/auth.js";
+import { checkOwner } from "../middleware/ownerCheck.js";
+
 const router = express.Router();
-const blogCtrl = require("../controllers/blogController");
-const auth = require("../Middleware/auth");
-const ownerCheck = require("../Middleware/ownerCheck");
 
-router.get("/", blogCtrl.getAllBlogs);
-router.get("/:id", blogCtrl.getBlogById);
-router.get("/category/:categoryId", blogCtrl.getBlogsByCategory);
+router.get("/", getAllBlogs);
+router.get("/:id", getBlogById);
+router.get("/category/:categoryId", getBlogsByCategory);
 
-router.post("/", auth, blogCtrl.createBlog);
-router.put("/:id", auth, ownerCheck, blogCtrl.updateBlog);
-router.delete("/:id", auth, ownerCheck, blogCtrl.deleteBlog);
+router.post("/", authenticate, createBlog);
+router.put("/:id", authenticate, checkOwner, updateBlog);
+router.delete("/:id", authenticate, checkOwner, deleteBlog);
 
-module.exports = router;
+export default router;

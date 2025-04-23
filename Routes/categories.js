@@ -1,14 +1,21 @@
-const express = require("express");
+import express from "express";
+import { 
+  getAllCategories, 
+  getCategoryById, 
+  createCategory, 
+  updateCategory, 
+  deleteCategory 
+} from "../controllers/categoryController.js";
+import { authenticate } from "../middleware/auth.js";
+import { checkRole } from "../middleware/roleCheck.js";
+
 const router = express.Router();
-const catCtrl = require("../controllers/categoryController");
-const auth = require("../Middleware/auth");
-const roleCheck = require("../Middleware/roleCheck");
 
-router.get("/", catCtrl.getAllCategories);
-router.get("/:id", catCtrl.getCategoryById);
+router.get("/", getAllCategories);
+router.get("/:id", getCategoryById);
 
-router.post("/", auth, roleCheck("admin"), catCtrl.createCategory);
-router.put("/:id", auth, roleCheck("admin"), catCtrl.updateCategory);
-router.delete("/:id", auth, roleCheck("admin"), catCtrl.deleteCategory);
+router.post("/", authenticate, checkRole("admin"), createCategory);
+router.put("/:id", authenticate, checkRole("admin"), updateCategory);
+router.delete("/:id", authenticate, checkRole("admin"), deleteCategory);
 
-module.exports = router;
+export default router;
