@@ -3,6 +3,7 @@ import Blog from "/models/Blog.js";
 exports.getAllBlogs = async (req, res) => {
   const blogs = await Blog.find().populate("author", "username").populate("category", "name");
   res.json(blogs);
+
 };
 
 exports.getBlogById = async (req, res) => {
@@ -14,6 +15,7 @@ exports.getBlogById = async (req, res) => {
 exports.createBlog = async (req, res) => {
   const blog = new Blog({ ...req.body, author: req.user.id });
   await blog.save();
+  
   res.status(201).json(blog);
 };
 
